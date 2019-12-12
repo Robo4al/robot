@@ -2,29 +2,31 @@ import _thread
 
 from machine import Pin
 from time import sleep
+from motor_dc import MotorDC
 
 class Robot4All:
 
     RUNNING = False
-    LED = 2
     SLEEP = 1
 
     def __init__(self):
-        self.led = Pin(self.LED, Pin.OUT)
-        self.led.value(False)
+        self.motor = MotorDC()
 
     def stop(self):
         self.RUNNING = False
-        self.led.value(False)
+        self.motor.move(0, 0, 0, 0)
+        self.thread = None
 
     def start(self):
         self.RUNNING = True
-        _thread.start_new_thread(self.run, ())
+        self.thread = _thread.start_new_thread(self.run, ())
 
     def run(self):
         while self.RUNNING:
+            # BLOCKLY CODE --------------
+            self.motor.move(1, 1, 1, 1)
+            # --------------
             sleep(self.SLEEP)
-            self.led.value(not self.led.value())
 
 if __name__ == "__main__":
     robot = Robot4All()
